@@ -1,6 +1,6 @@
 ##########################################################################
 #  bibtex2html - A BibTeX to HTML translator                             #
-#  Copyright (C) 1997-2010 Jean-Christophe Filliâtre and Claude Marché   #
+#  Copyright (C) 1997-2010 Jean-Christophe Filliï¿½tre and Claude Marchï¿½   #
 #                                                                        #
 #  This software is free software; you can redistribute it and/or        #
 #  modify it under the terms of the GNU General Public                   #
@@ -34,7 +34,7 @@ DOCDIR = $(prefix)/doc/bibtex2html
 # End of configuration part
 #########################################
 
-VERSION=1.97
+VERSION=1.97a
 
 OCAMLC   = @OCAMLC@
 OCAMLOPT = @OCAMLOPT@ 
@@ -225,7 +225,7 @@ source: clean
 	gzip -f --best $(NAME).tar)
 	if test -f $(FTP)/$(NAME).tar.gz && \
 	   ! cmp -s export/$(NAME).tar.gz $(FTP)/$(NAME).tar.gz; then \
-		echo "IL FAUT CHANGER DE NUMÉRO DE VERSION"; exit 1; \
+		echo "IL FAUT CHANGER DE NUMï¿½RO DE VERSION"; exit 1; \
 	fi
 	cp README COPYING GPL CHANGES export/$(NAME).tar.gz $(FTP)
 

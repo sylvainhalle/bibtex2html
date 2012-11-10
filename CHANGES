@@ -1,3 +1,6 @@
+Version 1.97a, November 10, 2012
+================================
+ o Fork from 1.97
 
 Version 1.97, February 6, 2012
 ==============================
@@ -285,8 +288,8 @@ Version 1.5 10/10/2001
 ======================
  o less invasive links (to BibTeX entries and files)
  o option -css to specify a style sheet
- o macro \textcolor now translated (patch by François Pottier)
- o option -bg to set background color (patch by François Pottier)
+ o macro \textcolor now translated (patch by Franï¿½ois Pottier)
+ o option -bg to set background color (patch by Franï¿½ois Pottier)
  o fixed HTML errors (unclosed tags)
 
 Version 1.46 21/2/2001
@@ -297,7 +300,7 @@ Version 1.46 21/2/2001
 
 Version 1.45 31/1/2001
 ======================
- o option -nf to specify how to display the link (patch by François Pottier)
+ o option -nf to specify how to display the link (patch by Franï¿½ois Pottier)
 
 Version 1.44 11/1/2001
 ======================
@@ -363,7 +366,7 @@ Version 1.2, 1999/02/10
  o implementation: use of the ocaml module Buffer
  o fixed bug: authorize & in keys
  o bib2bib conditions now take LaTeX accents into account. For example
-   \'e, \'{e} and é are all considered identical. Some accents still
+   \'e, \'{e} and ï¿½ are all considered identical. Some accents still
    have to be considered. A new module Latex_accents has been added
    for that purpose.
  o much more LaTeX macros translated

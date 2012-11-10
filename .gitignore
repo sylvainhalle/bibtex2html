@@ -8,3 +8,7 @@
 *.cmxs
 *.cmxa
 *~
+/config.status
+/config.log
+/Makefile
+/aux2bib
