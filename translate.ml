@@ -231,7 +231,7 @@ let display_links ch links =
 	output_string ch l.l_name;
 	Html.close_href ch;
 	output_string ch "</span>";
-	if r <> [] then output_string ch "<span class=\"bibtex2html-textonly\">|</span>\n";
+	if r <> [] then output_string ch "<span class=\"bibtex2html-textonly\">|</span>";
 	display r
   in
   if !print_links && links <> [] then begin 
