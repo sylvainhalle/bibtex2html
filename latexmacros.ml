@@ -533,6 +533,10 @@ def "\\MRhref"
   [Print "<a href=\"http://www.ams.org/mathscinet-getitem?mr=";
    Print_arg; Print "\">"; Print_arg; Print "</a>"];
 
+(* macros for the IEEEtran style *)
+
+def "\\BIBforeignlanguage" [Skip_arg; Print_arg;];
+
 (* macros for the aaai-named style *)
 
 def "\\em" [];
