@@ -12,3 +12,6 @@
 /config.log
 /Makefile
 /aux2bib
+/version.ml
+/*.tex
+/manual.*
