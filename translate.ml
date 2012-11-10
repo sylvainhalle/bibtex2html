@@ -351,7 +351,7 @@ let eprint_link e =
 
 let bibtex_entry k =
   { l_url = 
-      sprintf "%s%s#%s" !bibentries_file !link_suffix k;
+      sprintf "%s%s#%s" (Filename.basename !bibentries_file) !link_suffix k;
     l_name = 
       "bib" }
 
