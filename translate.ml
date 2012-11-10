@@ -224,16 +224,18 @@ type link = { l_url : string; l_name : string }
 let display_links ch links = 
   let rec display = function
     | [] -> 
-	output_string ch "&nbsp;]\n"
+	output_string ch "<span class=\"bibtex2html-textonly\">]</span>\n"
     | l :: r -> 
+        output_string ch "<span class=\"bibtex2html-link\">";
 	Html.open_href ch l.l_url;
 	output_string ch l.l_name;
 	Html.close_href ch;
-	if r <> [] then output_string ch "&nbsp;| \n";
+	output_string ch "</span>";
+	if r <> [] then output_string ch "<span class=\"bibtex2html-textonly\">|</span>\n";
 	display r
   in
   if !print_links && links <> [] then begin 
-    output_string ch "[&nbsp;"; display links 
+    output_string ch "<span class=\"bibtex2html-textonly\">[</span>"; display links 
   end
 
 exception Caught
