@@ -1,0 +1,487 @@
+
+Version 1.97, February 6, 2012
+==============================
+ o fixed compilation (no more -cclib -lstr)
+ o fixed translation of \u{a}, removed incorrect translations of \u{n}
+   and \u{N} (contributed by Domenico Bianculli)
+ o bib2bib conditions: support for \u (contributed by Domenico Bianculli)
+ o configure: option --disable-doc to avoid compiling the PDF documentation
+ o configure: pdflatex is searched for; if not found, documentation is disabled
+
+Version 1.96, September 29, 2010
+================================
+ o PDF documentation (manual.pdf) is compiled by default
+ o option -debug now prints the exact BibTeX commmand which is run
+ o new option --note-html similar to --note but assuming a bibtex
+   field already in HTML format
+ o various little changes in the Makefile requested by the Debian maintainer
+
+Version 1.95, March 23, 2010
+============================
+ o bib2bib: option "--php-output" to produce output as a PHP 2D array
+ o bib2bib: options "--remove" and "--rename", to remove or rename fields
+ o new headers with proper copyright
+ o bib2bib: option "--no-comment", to prevent generation of extra 
+   comments
+ o fixed support for DOI links: when field "doi" is already an URL, the
+   DOI prefix is not prepended
+ o tags "bibtexnumber" and "bibtexitem" are now inserted to ease the 
+   customization using CSS
+
+Version 1.94, 07/05/09
+======================
+ o support for arXiv preprints links: a field "eprint = {xxx}" will be
+   recognized, if any, and a link to http://arxiv.org/abs/ will be displayed; 
+   option -noeprint turns it off and option -eprintf-prefix <url> sets a
+   different prefix for the urls (contributed by Ari Stern)
+
+Version 1.93, 12/12/08
+======================
+ o bib2bib: giving '$date' as argument of option -s allows to sort from 
+   oldest to newest entry 
+ o bib2bib: field names in conditions may contain digits and '-' (usefull for 
+   custom fields)
+
+Version 1.92, 08/07/08
+======================
+ o Windows installer (using NSIS nsis.sourceforge.net)
+ o new bib2bib option --expand-xrefs to perform crossrefs expansion
+ o option -m (reading macros from a file):
+   - fixed macro definition with \def
+   - macros with arguments are now supported
+ o added accents conversion for tilda, and fixed accents conversion
+   for \"i, \"\i and such (patch by Samuel Colin)
+ o fixed bib2bib command line options to accept --warn-error and
+   --quiet (as described in the manual)
+
+Version 1.91, 20/02/2008
+========================
+ o fixed bug in bib2bib and bibtex2html when quotes (") are used in fields
+ o fixed bug with -nobibsource and -multiple (bib links on the separate pages)
+
+Version 1.90, 01/02/2008
+========================
+ o bib2bib: = and <> are now case insensitive; use == and != instead
+   to perform case sensitive comparison
+ o correctly support $x$$y$ where the central $$ is not passing into 
+   display math mode
+ o more cases for accent macros \' \~ \. \u \v (patch by John Kewley)
+
+Version 1.89, 08/01/2008
+========================
+ o entry types and field names now typeset in lowercase in f_bib.html
+ o new option -unicode to use Unicode entities for some macros
+   (such as &#9711; for \bigcirc, etc.)
+ o new option -html-entities to use HTML entities for some macros
+   such as \le, \approx, etc. (patch by Steven G. Johnson)
+ o new option -header to insert a header (similar to -footer)
+  (patch by Steven G. Johnson)
+
+Version 1.88, 20/11/2007
+========================
+ o new option -revkeys to number entries in reverse order
+   (patch by Walter Guttmann)
+ o fixed bug with '\ ' (backslash space) introduced in version 1.82
+   (shows up with -s gerplain)
+ o \c{C}, \"y, \"Y  (patch by John Kewley)
+ o \k (using unicode entities, patch by John Kewley)
+
+Version 1.87, 16/07/2007
+========================
+ o \hat
+ o \mathfrak (supported but no font change, as for \mathcal ad \mathbb)
+ o \~a, \~A, \~o, and \~O
+ o -- translated to &ndash; and --- to &mdash;
+
+Version 1.86, 21/03/2007
+========================
+ o more accents macros: \oe \OE \~ \v \' \r
+
+Version 1.85, 2/11/2006
+=======================
+ o fixed HTML output in f_bib.html: <pre> no more enclosed in <p>;
+   bibtex fields now typeset in lowercase; added links back to f.html
+ o macros \textin (<sub>), \textsu (<sup>), \textsi (<i>),  
+   and macros \textln, \textos, \textdf, \textsw without translation
+ o fixed bug in --quiet under Windows
+ o option -t now sets the title of f_bib.html too (and of entries
+   files when used with -multiple)
+
+Version 1.84, 19/10/2006
+========================
+ o improved support for MRNUMBER of AMS styles: only first word used
+   in URL link
+
+Version 1.83, 13/09/2006
+========================
+ o support for DOI links: a field "DOI = {xxx}" will be recognized, if any,
+   and a link to http://dx.doi.org/xxx will be displayed; 
+   option -no-doi turns it off and option -doi-prefix <url> sets a
+   different prefix for the DOI urls  
+ o macro \H (Hungarian umlauts)
+ o new option -linebreak to insert a linebreak between an entry and its links
+ o new option -use-table to enforce the use of a table (to be used
+   _after_ -no-keys if needed)
+
+Version 1.82, 07/06/2006
+========================
+ o `` and '' translated to &ldquo; and &rdquo;
+ o aesthetic changes: 
+   - no more line break between the entry and the links;
+   - more space between an abstract and the next entry
+ o improving date parsing: month field such as "2~" # dec is now parsed
+ o fixed bug: a space after a macro is now discarded
+
+Version 1.81, 12/05/2006
+========================
+ o new option --print-keys to display the sorted keys (and exit)
+ o improved date sorting to handle months such as mar # "\slash " # apr
+ o no table anymore with -nokeys (only HTML paragraphs)
+
+Version 1.80, 15/3/2006
+=======================
+ o remove leading ./ in front of relative URLs (was introduced a long
+   time ago to circumvent an Internet Explorer bug; see below)
+ o no more escaping of the character & in URLs
+
+Version 1.79, 22/2/2006
+=======================
+ o fixed bug with ISO-latin characters in bib2bib conditions
+ o fixed bug with implicit abbrevs (jan, feb, etc.)
+
+Version 1.78, 16/12/2005
+Version 1.77, 18/11/2005
+========================
+ o fixed bug with unbalanced brackets in bib2bib/bibtex2html output
+
+Version 1.76, 22/9/2005
+=======================
+ o translation of \'c
+ o replaced ISO latin 1 characters with their entity codes
+ o support for Czech characters (both contributed by Danny Chrastina)
+
+Version 1.75, 2/2/2005
+======================
+ o updated manual (the manual was not reflecting the change of f-bib
+   into f_bib in version 1.74; see below)
+
+Version 1.74, 22/10/2004
+========================
+ o bib2bib: special characters \n \r \t and \ddd in regular expressions
+ o fix minor bug: when looking for cross-references, comparison of
+   keys is now case-insensitive
+ o footer and bibtex entries now enclosed in HTML paragraphs (<p>...</p>)
+ o in case of syntax error, the key of the entry where the error
+    occurred is shown
+ o new option -no-links to disable weblinks
+ o fix bug in bib2bib: preamble now enclosed with a single pair of braces
+ o bibtex entries now in f_bib.html (instead of f-bib.html)
+
+Version 1.72, 3/9/2004
+======================
+ o --help now prints on standard output and exits successfully
+ o fixed bug with very long keys (when bibtex inserts % to cut lines)
+ o arguments to macros read from a file (option -m) are discarded
+
+Version 1.71, 24/8/2004
+=======================
+ o improved date sorting algorithm to handle days (e.g. month = "June 29")
+ o bib2bib: crossrefs are expanded before conditions are checked 
+ o bib2bib: '_' allowed in field identifiers 
+ o added option -w (--warn-error) to stop immediately when a warning
+   is issued.
+
+Version 1.70, 30/6/2004
+=======================
+ o fixed bug with crossrefs not translated from LaTeX to HTML
+ o macros for Greek letters now translated to HTML entities
+
+Version 1.69, 6/4/2004
+======================
+ o macros \bysame, \MR and \MRhref for AMS* stylew
+ o modified -bib.html output to circumvent a Konqueror bug
+
+Version 1.68, 16/03/2004
+========================
+ o fixed bug with parentheses-enclosed entries
+ o macros \relax, \hskip
+
+Version 1.66, 18/02/2004
+========================
+ o characters ( and ) in keys
+ o New FAQ: pb with quotes under MS Windows
+
+Version 1.65, 3/10/2003
+========================
+ o better handling of accented letters, in particular LaTeX commands
+   for accents are taken into account in regular expressions.
+ o fixed bug: keywords were duplicated with -single
+ o web links automatically inserted for -f and -nf fields in the .bib file
+ o new option -use-keys to use the original keys from the .bib file
+ o new option -single to put everything into a single page
+ o HTML links inserted in the BibTeX entries page
+
+Version 1.61, 15/7/2003
+=======================
+ o quoted & in URLS (&amp;)
+ o macro \href
+ o bib2bib does not stop anymore when no matching citation is
+   found, and in such a case an empty file is generated.
+
+Version 1.60, 19/6/2003
+=======================
+ o new bib2bib option -s to sort the bibliography (and -r to reverse the sort)
+ o macros \cal, \small
+
+Version 1.59, 16/6/2003
+=======================
+ o LaTeX '~' translated into &nbsp;
+ o field "postscript" treated as "ps"
+ o fixed links when -o used with a full path
+ o fixed behavior with -nf abstract ...
+ o macro \$
+
+Version 1.57, 9/4/2003
+======================
+ o option --note f to declare field f as an annotation (and then displayed 
+   like an "abstract" field)
+
+Version 1.56 12/11/2002
+=======================
+ o bib2bib: fixed bug in conditions lexer 
+ o fixed parser error in @preamble
+ o ./configure updated
+
+Version 1.54 10/7/2002
+======================
+ o option --no-header to suppress bibtex2html command in the HTML output
+ o HTML output: tags in lowercase, quoted attributes, <br> -> <br />
+ o fixed bug in Makefile.in (man pages installation)
+
+Version 1.53 18/6/2002
+======================
+ o keywords displayed if a field "keywords" is present; option --no-keywords
+ o aux2bib now handles multiple citations (\citation{foo,bar,gee})
+   (patch by Jose Ramon Alvarez Sanchez)
+
+Version 1.52 15/01/2002
+=======================
+ o fixed bug in evaluation of <> operator in bib2bib conditions
+ o fixed bugs in URLs display
+ o new tool aux2bib by Ralf Treinen
+ o removed <font size> when option -css is used
+ o added macro \frac
+ o added .txt and .html as recognized file extensions
+
+Version 1.51 15/10/2001
+=======================
+ o fixed bug in links to not compressed documents; nicer names for links
+ o fixed bug in --quiet
+ o option -dl to format entries with <DL> instead of <TABLE>
+ o spaces quoted in HTML comment giving the bibtex2html command
+ o macro \path (treated like \verb)
+
+Version 1.5 10/10/2001
+======================
+ o less invasive links (to BibTeX entries and files)
+ o option -css to specify a style sheet
+ o macro \textcolor now translated (patch by François Pottier)
+ o option -bg to set background color (patch by François Pottier)
+ o fixed HTML errors (unclosed tags)
+
+Version 1.46 21/2/2001
+======================
+ o code documented with ocamlweb (but still poor comments)
+ o fixed bug for links' names 
+ o fixed a minor HTML error (inversion of <blockquote> and <font>)
+
+Version 1.45 31/1/2001
+======================
+ o option -nf to specify how to display the link (patch by François Pottier)
+
+Version 1.44 11/1/2001
+======================
+ o bibtex2html: href bugfix for generation in output dir (Jan Nieuwenhuizen)
+ o macros \lor and \land (translation of raw ASCII)
+ o brackets { } are now ignored when comparing or matching strings in
+   bib2bib conditions
+
+Version 1.41 30/6/2000
+======================
+ o configured by GNU autoconf
+ o option -labelname to use the label name when inserting a link
+ o fixed bug in option -t when bibtex file read on standard input
+ o relative URL not prefixed with ./ when email addresses
+ o macro \par translated to <p> not <br>
+ o added symbols '&', '|', '!' and '?' resp. for synonyms of 'and',
+   'or', 'not' and 'exists'
+ o replaced notations '$' and '#' resp. by '$key' and '$type' in 
+   bib2bib conditions
+ o all macros \xxfamily, \xxseries and \xxshape
+ o fixed bug in translating unbalanced quotes to HTML
+ o bib2bib: predicate "exists" added in conditions to check existence
+   of a field
+ o bib2bib: new semantics for non-existent fields in conditions
+ o bib2bib: added # in conditions to refer to the entry type
+ o bib2bib: strings may now be written between single quotes
+ o macros \mathsf, \mathtt, \mathnormal, \TeX, \LaTeXe
+ o option -q, --quiet: do not write anything to stderr except errors
+
+Version 1.4, 19/6/2000
+======================
+ o fixed 2 bugs in bib2bib: it is now allowed to have the same key for
+   an abbrev and for a regular entry. An abbrev that refer itself to
+   other abbrevs is now correctly handled.
+ o fixed bug: abbreviations were not correctly expansed in the -bib file
+ o relative URL now prefixed by ./ (otherwise Internet Explorer can't resolve
+   them correctly)
+ o arguments to option -f are now turned into uppercase
+ o added options -fsuffix / -lsuffix to specify different suffixes for
+   HTML files and links (-suffix s is equivalent to -fsuffix s -lsuffix s)
+ o fixed bug: entries were sorted in reverse order when no order specified
+ o remove nested tags <a> (incorrect HTML)
+ o closed tags <td> with </td>
+ o added macro \html (raw HTML)
+ o fixed bug with both -nodoc and -multiple
+
+Version 1.3, 2/6/2000
+=====================
+ o sorting according to dates: bibtex2html no more fails on incorrect
+   dates but issues a warning; if no date is present, the date of the
+   crossref is used, if any.
+ o macros: \LaTeX, \v, \tm, \sl
+ o character / in keys
+ o option --hevea-url to translate macro \url as HeVeA's instead of LaTeX's
+ o bib2bib now takes care of repeated entries (See the manual)
+ o \textsf now translated as \textbf (i.e. to bold face)
+ o production of valid HTML (Thanks to John Kewley)
+
+Version 1.2, 1999/02/10
+=======================
+ o manual.tex does not require hevea.sty anymore
+ o fixed wrong link to bibtex entries in the page with abstracts
+ o implementation: use of the ocaml module Buffer
+ o fixed bug: authorize & in keys
+ o bib2bib conditions now take LaTeX accents into account. For example
+   \'e, \'{e} and é are all considered identical. Some accents still
+   have to be considered. A new module Latex_accents has been added
+   for that purpose.
+ o much more LaTeX macros translated
+ o macro \u (a romanian accent) recognized (but \u{s} simply outputs s) 
+ o option --raw-url to print URL instead of files's types.
+ 
+Version 1.1, 1999/11/05
+=======================
+ o bibtex2html version is written at the end of the document and inside the
+   HTML source
+ o options --output and --nobibsource for bibtex2html
+ o bibtex2html now reads on standard input if no input file is given, 
+   and writes on standard output (if no output file is specified).
+ o new option of bib2bib: --expand expands the abbreviations
+ o macro \neq -> <>
+ o Readbib now outputs messages on standard error, not standard output
+ o in bib2bib conditions, $ means the key of an entry
+ o changed behaviour of bib2bib, in order to be used as a filter :
+   . if no input files, input is taken from standard input
+   . if no -ob option, output is done on standard output
+   . if no -oc option, no citation file created at all 
+ o bib2bib now supports options --version and --warranty
+ o macro \% -> %
+ o macro \ss -> &szlig;
+ o authorize + in keys
+
+Version 1.0, 1999/07/15
+=======================
+ o option --footer
+ o condition are now arbitrary boolean expressions over comparaisons
+   and matchings
+ o macro \mathcal 
+ o bib2bib is able to parse conditions of the form field:regexp (but
+   only one condition at a time)
+ o the bib output :
+    . is in the same order as the original one
+    . option -noexpand produces an bib output still containing @STRINGs 
+      (but notice that crossrefs are never expanded)
+ o the default bibtex command is "bibtex -min-crossrefs=1000" in order
+    to avoid citation to the crossrefs. (This behaviour is obtained
+    only when using a -citefile where the crossrefs are not included.)
+ o macros with nested braces now recognized correctly 
+ o macros \textrm and \textsl
+ o option -citefile to read keys to cite from a file
+ o macros \sim, \symbol; macros for accents without argument (\~{}, \'{}, etc.)
+
+Version 0.95, 1999/06/02
+========================
+ o german macros when using a german BibTeX style
+ o comma suppressed after last field in BibTeX entries file
+ o macro \textit
+ o comma after "BibTeX entry" suppressed when not needed
+
+Version 0.91, 1999/04/19
+========================
+ o bug fix in links to BibTeX entries in the page with abstracts
+ o code optimization
+
+Version 0.9, 1999/02/12
+=======================
+  o option -both to make both versions with and without abstracts
+  o suffix .zip added for compressed files
+
+Version 0.8, 1999/02/08
+=======================
+  o option -multiple (one file per entry)
+  o bug fixed in syntax error line report
+  o translation for macros \DH, \th
+  o file types prefixed by "Compressed" when it is the case
+  o file suffixes PDF and RTF recognized
+  o abstracts printed in a smaller font (<font size=-1>)
+
+Version 0.72, 1999/01/21
+========================
+  o option -warranty to get the warranty conditions
+  o translation of various LaTeX accents
+
+Version 0.71, 1999/01/11
+========================
+  o translation for macros \o, \O, \ae, \AE, \aa, \AA
+  
+Version 0.7, 1998/11/18
+=======================
+  o on-line documentation
+  o option -f, --field
+  o long names for all options
+  o more math macros, better handling of {sub,sup}scripts
+  o option -noabstract
+  o option -nofooter
+
+Version 0.61, 1998/10/19
+========================
+  o option -nokeys
+
+Version 0.6, 1998/02/17
+=======================
+  o spaces in URL are removed
+  o compilation in native code  
+
+Version 0.4, 1998/01/28
+=======================
+  o multiple bibliographies
+  o read macros in a file
+
+Version 0.3, 1997/11/06
+=======================
+  o option -c to specify a command
+  o quick sort of entries
+  o macro \url is translated into a HTML link
+
+Version 0.2, 1997/10/24
+=======================
+  o new presentation with only 2 files (F.html and F-bib.html)
+
+Version 0.1, 1997/07/17
+=======================
+  o first public release
+
+Local Variables: 
+mode: text
+End: 

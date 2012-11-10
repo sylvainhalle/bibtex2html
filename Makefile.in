@@ -1,0 +1,352 @@
+##########################################################################
+#  bibtex2html - A BibTeX to HTML translator                             #
+#  Copyright (C) 1997-2010 Jean-Christophe Filliâtre and Claude Marché   #
+#                                                                        #
+#  This software is free software; you can redistribute it and/or        #
+#  modify it under the terms of the GNU General Public                   #
+#  License version 2, as published by the Free Software Foundation.      #
+#                                                                        #
+#  This software is distributed in the hope that it will be useful,      #
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                  #
+#                                                                        #
+#  See the GNU General Public License version 2 for more details         #
+#  (enclosed in the file GPL).                                           #
+##########################################################################
+
+#########################################
+# Configuration part
+#########################################
+
+# where to put executable files
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+BINDIR=@bindir@
+EXE=@EXE@
+
+# where to install the man pages
+MANDIR = @mandir@
+
+# where to install the doc
+DOCDIR = $(prefix)/doc/bibtex2html
+
+#########################################
+# End of configuration part
+#########################################
+
+VERSION=1.97
+
+OCAMLC   = @OCAMLC@
+OCAMLOPT = @OCAMLOPT@ 
+CAMLDEP  = @OCAMLDEP@
+OCAMLLEX = @OCAMLLEX@
+ZLIBS    =
+DEBUG    =
+FLAGS    = $(ZLIBS) $(DEBUG)
+PROFILE  =
+
+STRLIB = 
+
+OBJS =  options.cmx html.cmx latexmacros.cmx latexscan.cmx bbl_lexer.cmx \
+	bibtex.cmx bibtex_parser.cmx bibtex_lexer.cmx \
+	readbib.cmx expand.cmx bibfilter.cmx \
+	biboutput.cmx version.cmx translate.cmx \
+	copying.cmx main.cmx
+
+BIB2BIBOBJS = options.cmx bibtex.cmx bibtex_lexer.cmx \
+        bibtex_parser.cmx readbib.cmx \
+	latex_accents.cmx condition.cmx \
+	condition_parser.cmx condition_lexer.cmx parse_condition.cmx \
+	bibfilter.cmx latexmacros.cmx latexscan.cmx expand.cmx \
+	html.cmx biboutput.cmx version.cmx copying.cmx bib2bib.cmx
+
+all: @OCAMLBEST@ doc-@enable_doc@
+
+opt: bibtex2html$(EXE) bib2bib$(EXE)
+
+byte: bibtex2html.byte bib2bib.byte
+
+.PHONY: bench
+
+bench: bibtex2html
+	cd bench; sh bench
+
+test: bibtex2html bib2bib
+	./bib2bib$(EXE) test.bib
+	./bibtex2html$(EXE) test.bib
+	@echo "test passed successfully"
+
+install-indep:
+	mkdir -p $(BINDIR)
+	cp aux2bib $(BINDIR)/aux2bib
+	mkdir -p $(MANDIR)/man1
+	cp bibtex2html.1 $(MANDIR)/man1/bibtex2html.1
+	cp bibtex2html.1 $(MANDIR)/man1/bib2bib.1
+	cp aux2bib.1 $(MANDIR)/man1/aux2bib.1
+
+install: install-indep
+	if test @OCAMLBEST@ = opt ; then \
+		cp bibtex2html bib2bib $(BINDIR) ; \
+	else \
+		cp bibtex2html.byte $(BINDIR)/bibtex2html ; \
+		cp bib2bib.byte $(BINDIR)/bib2bib ; \
+	fi
+
+install-byte: install-indep
+	cp bibtex2html.byte $(BINDIR)/bibtex2html
+	cp bib2bib.byte $(BINDIR)/bib2bib
+
+win: bibtex2html$(EXE) bib2bib$(EXE) bibtex2html.nsi
+	"/cygdrive/c/Program Files (x86)/NSIS/makensis" /DVERSION=$(VERSION) bibtex2html.nsi
+
+local: bibtex2html bib2bib
+	cp bibtex2html bib2bib aux2bib $$HOME/bin/$$OSTYPE
+	cp *.1 $$HOME/man/man1
+
+demons: bibtex2html bib2bib
+	cp bibtex2html bib2bib aux2bib /users/demons/demons/bin/$$OSTYPE
+	cp *.1 $$HOME/man/man1
+
+bibtex2html$(EXE): $(OBJS)
+	$(OCAMLOPT) $(PROFILE) $(FLAGS) -o bibtex2html$(EXE) str.cmxa $(OBJS) $(STRLIB)
+	strip bibtex2html$(EXE)
+
+bibtex2html.byte: $(OBJS:.cmx=.cmo)
+	$(OCAMLC) $(PROFILE) $(FLAGS)-o bibtex2html.byte str.cma $(OBJS:.cmx=.cmo) $(STRLIB) 
+
+bibtex2html.pbyte: $(OBJS:.cmx=.cmo)
+	$(OCAMLC) -use-runtime ~demons/bin/$(OSTYPE)/ocamlcustomrun \
+		-o bibtex2html.pbyte str.cma $(OBJS:.cmx=.cmo)  
+
+bibtex2html.static: $(OBJS)
+	$(OCAMLOPT) $(PROFILE) $(FLAGS) -o $@ str.cmxa $(OBJS) $(STRLIB) -cclib "-L. -static"
+	strip $@
+
+SRC=$(OBJS:.cmx=.ml)
+bibtex2html.dfc: $(SRC)
+	ocamldefun -d defun `ocamldefun-args $(SRC)`
+	cd defun; $(OCAMLOPT) $(FLAGS) -o ../$@ str.cmxa $(SRC)
+
+bib2bib$(EXE): $(BIB2BIBOBJS)
+	$(OCAMLOPT) $(PROFILE) $(FLAGS) -o bib2bib$(EXE) str.cmxa $(BIB2BIBOBJS) $(STRLIB)
+	strip bib2bib$(EXE)
+
+bib2bib.byte: $(BIB2BIBOBJS:.cmx=.cmo)
+	$(OCAMLC)  $(PROFILE) $(FLAGS) -o bib2bib.byte str.cma $(BIB2BIBOBJS:.cmx=.cmo) $(STRLIB)
+
+bib2bib.pbyte: $(BIB2BIBOBJS:.cmx=.cmo)
+	$(OCAMLC) -use-runtime ~demons/bin/$(OSTYPE)/ocamlcustomrun \
+		-o bib2bib.pbyte str.cma $(BIB2BIBOBJS:.cmx=.cmo) 
+
+bib2bib.static: $(BIB2BIBOBJS)
+	$(OCAMLOPT) $(PROFILE) $(FLAGS) -o $@ str.cmxa $(BIB2BIBOBJS) $(STRLIB) -cclib "-L. -static"
+	strip $@
+
+static: bibtex2html.static bib2bib.static
+	cp bibtex2html.static $$HOME/bin/$$OSTYPE/bibtex2html
+	cp bib2bib.static $$HOME/bin/$$OSTYPE/bib2bib
+
+bibtex_parser.mli bibtex_parser.ml: bibtex_parser.mly
+	ocamlyacc bibtex_parser.mly
+
+condition_parser.mli condition_parser.ml: condition_parser.mly
+	ocamlyacc condition_parser.mly
+
+version.ml: Makefile
+	echo "let version = \""$(VERSION)"\"" > version.ml
+	echo "let date = \""`date`"\"" >> version.ml
+
+version.tex: Makefile
+	printf "\\\newcommand{\\\version}{$(VERSION)}" > version.tex
+
+latexscan.ml: latexscan.mll
+	$(OCAMLLEX) latexscan.mll
+
+bibtex_lexer.ml: bibtex_lexer.mll
+	$(OCAMLLEX) bibtex_lexer.mll
+
+# file headers
+##############
+headers:
+	headache -c header_config.txt -h common_header.txt \
+		Makefile.in configure.in README \
+		*.ml *.ml[ily4] manual.tex \
+		bibtex2html.nsi
+	# aux2bib.in ?
+
+# literate programming
+######################
+
+lp: bibtex2html.dvi
+
+WEBFILES=options.mli options.ml latexmacros.mli latexmacros.ml \
+         latexscan.mll bbl_lexer.mll \
+         bibtex.mli bibtex.ml bibtex_lexer.mll bibtex_parser.mly \
+	 readbib.mli readbib.ml expand.mli expand.ml \
+         bibfilter.mli bibfilter.ml \
+         html.ml biboutput.mli biboutput.ml version.mli \
+         translate.mli translate.ml copying.mli copying.ml main.ml
+
+bibtex2html.tex: $(WEBFILES)
+	ocamlweb -o $@ $(WEBFILES)
+
+.SUFFIXES: .tex .dvi .pdf
+
+.tex.dvi:
+	latex $< && latex $<
+
+.tex.pdf:
+	pdflatex $< && pdflatex $<
+
+# export
+########
+
+NAME=bibtex2html-$(VERSION)
+
+FTP = /users/demons/filliatr/ftp/ocaml/bibtex2html
+WWWSRC = /users/demons/filliatr/www/bibtex2html
+
+SOURCEFILES = *.ml* aux2bib.in Makefile.in configure.in configure .depend README COPYING GPL CHANGES manual.tex *.1 test.bib
+
+export: source export-doc linux
+	echo "<#def version>$(VERSION)</#def>" > $(WWWSRC)/version.prehtml
+	make -C $(WWWSRC) install
+	mail -s "nouvelle release de bibtex2html" treinen@debian.org < /dev/null
+	mail -s "new release of bibtex2html" guido.grazioli@gmail.com < /dev/null
+	echo "*** prevenir Gerald Pfeifer <pfeifer@dbai.tuwien.ac.at> ***"
+
+move-olds:
+	cp $(FTP)/bibtex2html* $(FTP)/olds
+
+source: clean 
+	mkdir -p export/$(NAME)
+	cp $(SOURCEFILES) export/$(NAME)
+	(cd export ; tar cf $(NAME).tar $(NAME) ; \
+	gzip -f --best $(NAME).tar)
+	if test -f $(FTP)/$(NAME).tar.gz && \
+	   ! cmp -s export/$(NAME).tar.gz $(FTP)/$(NAME).tar.gz; then \
+		echo "IL FAUT CHANGER DE NUMÉRO DE VERSION"; exit 1; \
+	fi
+	cp README COPYING GPL CHANGES export/$(NAME).tar.gz $(FTP)
+
+BINARY = bibtex2html-$(VERSION)-$(OSTYPE)
+
+linux: clean binary
+
+solaris:
+	ssh sun-graphe make -C $(HOME)/soft/ocaml/bibtex clean binary
+
+sunos4:
+	rmake ??? $(HOME)/soft/ocaml/bibtex clean binary
+
+BINARYFILES = README COPYING GPL bibtex2html bib2bib aux2bib \
+	      bibtex2html.1 bib2bib.1 aux2bib.1
+
+binary: bibtex2html bib2bib
+	mkdir -p export/$(BINARY)
+	cp $(BINARYFILES) export/$(BINARY)
+	(cd export; tar czf $(BINARY).tar.gz $(BINARY))
+	cp export/$(BINARY).tar.gz $(FTP)
+
+AIX=bibtex2html-$(VERSION)-AIX
+
+aix:
+	mkdir -p export/$(AIX)
+	cp $(BINARYFILES) export/$(AIX)
+	(cd export; tar cf $(AIX).tar $(AIX); gzip --best $(AIX).tar)
+
+# documentation
+###############
+
+WWW=/users/demons/filliatr/WWW/bibtex2html
+
+doc-yes: doc
+doc-no:
+doc: manual.pdf manual.html
+
+install-doc: manual.pdf manual.html
+	mkdir -p $(DOCDIR)
+	cp -f manual.pdf $(DOCDIR)
+	cp -f manual.html $(DOCDIR)
+
+export-doc: manual.pdf manual.html
+	cp -f manual.pdf $(WWW)/doc
+	cp -f manual.html $(WWW)/doc
+
+manual.pdf: version.tex manual.tex
+	pdflatex manual.tex
+	pdflatex manual.tex
+
+manual.html: version.tex manual.tex
+	hevea -exec xxdate.exe -fix manual.tex
+
+# generic rules :
+#################
+
+.SUFFIXES: .mli .ml .mll .cmi .cmo .cmx
+
+.mli.cmi:
+	$(OCAMLC) -c $(FLAGS) $<
+
+.ml.cmo:
+	$(OCAMLC) -c $(FLAGS) $<
+
+.ml.o:
+	$(OCAMLOPT) -c $(FLAGS) $<
+
+.ml.cmx:
+	$(OCAMLOPT) -c $(PROFILE) $(FLAGS) $<
+
+.mll.ml:
+	$(OCAMLLEX) $<
+
+# Emacs tags
+############
+
+tags:
+	find . -name "*.ml*" | sort -r | xargs \
+	etags "--regex=/let[ \t]+\([^ \t]+\)/\1/" \
+	      "--regex=/let[ \t]+rec[ \t]+\([^ \t]+\)/\1/" \
+	      "--regex=/and[ \t]+\([^ \t]+\)/\1/" \
+	      "--regex=/type[ \t]+\([^ \t]+\)/\1/" \
+              "--regex=/exception[ \t]+\([^ \t]+\)/\1/" \
+	      "--regex=/val[ \t]+\([^ \t]+\)/\1/" \
+	      "--regex=/module[ \t]+\([^ \t]+\)/\1/"
+
+# myself
+
+Makefile: Makefile.in config.status
+	./config.status
+
+config.status: configure
+	./config.status --recheck
+
+configure: configure.in
+	autoconf 
+
+# clean and depend
+##################
+
+GENERATED = bibtex_lexer.ml bbl_lexer.ml \
+	    latexscan.ml latex_accents.ml condition_lexer.ml \
+	    bibtex_parser.mli bibtex_parser.ml \
+            condition_parser.mli condition_parser.ml version.ml version.tex
+
+clean::
+	rm -f *~ *.cm[iox] *.o 
+	rm -f $(GENERATED)
+	rm -f bibtex2html bib2bib
+	rm -f manual.aux manual.log manual.dvi manual.pdf
+	rm -f manual.toc manual.haux manual.html manual.htoc
+	rm -f bibtex2html.static bib2bib.static
+	rm -f bibtex2html.byte bib2bib.byte
+
+distclean:: clean
+	rm -f Makefile aux2bib
+
+depend:: $(GENERATED)
+	rm -f .depend
+	ocamldep $(ZLIBS) *.mli *.ml > .depend
+
+include .depend
+

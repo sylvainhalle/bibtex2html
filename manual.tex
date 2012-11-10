@@ -1,0 +1,882 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  bibtex2html - A BibTeX to HTML translator                             %
+%  Copyright (C) 1997-2010 Jean-Christophe Filliâtre and Claude Marché   %
+%                                                                        %
+%  This software is free software; you can redistribute it and/or        %
+%  modify it under the terms of the GNU General Public                   %
+%  License version 2, as published by the Free Software Foundation.      %
+%                                                                        %
+%  This software is distributed in the hope that it will be useful,      %
+%  but WITHOUT ANY WARRANTY; without even the implied warranty of        %
+%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                  %
+%                                                                        %
+%  See the GNU General Public License version 2 for more details         %
+%  (enclosed in the file GPL).                                           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+\usepackage{fullpage}
+\usepackage{url}
+
+%BEGIN LATEX
+\newcommand{\link}[2]{#2}
+%END LATEX
+%HEVEA\newcommand{\link}[2]{\ahref{#1}{#2}}
+\newcommand{\monurl}[1]{\link{#1}{#1}}
+\newcommand{\mm}{\symbol{45}\symbol{45}}
+
+\input{version.tex}
+
+\title{{\Huge\bfseries BibTeX2HTML} \\ 
+  A translator of BibTeX bibliographies into HTML\\
+  ~\\
+  Version \version{} --- \today}
+\author{Jean-Christophe Filli\^{a}tre and Claude March\'e \\
+        \normalsize\monurl{\url{http://www.lri.fr/~filliatr/bibtex2html}}}
+\date{}
+
+\begin{document}
+\sloppy
+
+\maketitle
+
+\tableofcontents
+
+
+\section{Introduction}
+
+BibTeX2HTML is a collection of tools for producing automatically HTML
+documents from bibliographies written in the BibTeX format. It
+consists in three command line tools:
+\begin{itemize}
+\item \texttt{bib2bib} is a filter tool that reads one or several
+  bibliography files, filters the entries with respect to a given
+  criterion, and outputs the list of selected keys together with a new
+  bibliography file containing only the selected entries;
+\item \texttt{bibtex2html} is a translator that reads a bibliography
+  file and outputs two HTML documents that contains respectively the
+  cited bibliography in a nice presentation, and the original BibTeX
+  file augmented with several transparent HTML links to allow easy
+  navigation. \texttt{bibtex2html} can handle \emph{any} BibTeX style
+  file, including those producing multiple bibliographies.
+\item \texttt{aux2bib} reads a \texttt{.aux} file as produced by
+  \LaTeX\ and writes to standard output a BibTeX file containing exactly the
+  BibTeX entries refereed in the \texttt{.aux} file.
+\end{itemize}
+
+
+\section{The \texttt{bibtex2html} command tool}
+
+bibtex2html is a BibTeX to HTML translator. It is invocated as 
+\begin{flushleft}
+\texttt{bibtex2html} [options] [\textit{file.bib}]
+\end{flushleft}
+where the possible \link{\#options}{options} are described below and
+where \textit{file.bib} is the name of the BibTeX file, which must
+have a \textit{.bib} suffix. If this file is not given, then entries
+are input from standard input.
+
+
+Then two HTML documents are created (unless option
+\verb|-nobibsource| is selected or input is standard input, see below) : 
+\begin{itemize}
+\item \textit{file.html} which is the bibliography in HTML format
+%HEVEA, like \link{examples/biblio-these.html}{this}
+;
+\item \textit{file\_bib.html} which contains all the entries in ASCII
+  format.
+%HEVEA ,like \link{examples/biblio-these_bib.html}{this}
+\end{itemize}
+\texttt{bibtex} is called on \textit{file.bib} in order to produce the
+a LaTeX document, and then this LaTeX document is translated into an
+HTML document.  The BibTeX file \textit{file.bib} is also parsed in
+order to collect additional fields (abstract, url, ps, http, etc.)
+that will be used in the translation.
+
+If input is standard input and option \verb|--output| is not given,
+the first file is output to standard output, and the second is not
+created.
+
+%HEVEA\begin{rawhtml}<a name=fields>\end{rawhtml}
+
+\subsection{Additional fields and automatic web links}
+
+The main interest of \texttt{bibtex2html} with respect to a
+traditional LaTeX to HTML translator is the use of additional fields
+in the BibTeX database and the automatic insertion of web
+links.
+
+A link is inserted:
+\begin{itemize}
+
+\item  at each cross-reference inside the bibliography entries; 
+
+\item  when the \verb|\url| LaTeX macro is used in the text; 
+
+\item  for each BibTeX field whose name is "ftp", "http", "url", "ps"
+  ,"dvi", "rtf", "pdf",
+  "documenturl", "urlps" or "urldvi". The name of this link depends on
+  the nature of the link: 
+  \begin{itemize}
+  \item it is the file suffix, whenever this suffix is \texttt{.dvi},
+    \texttt{.ps}, \texttt{.pdf}, \texttt{.rtf}, \texttt{.txt} or
+    \texttt{.html}, possibly followed by a compression sufix,
+    \texttt{.gz}, \texttt{.Z} or \texttt{.zip};
+  \item otherwise the name of the link is either \texttt{http} or
+    \texttt{ftp} depending on the protocol.
+  \end{itemize}
+  
+  You can insert web link for other fields and/or specify alternative
+  names for the links using the options
+  \texttt{-f} and \texttt{-nf} (see below).
+  
+\end{itemize}
+
+
+%HEVEA See the result on \link{examples/biblio-these.html}{this example}.
+
+\subsubsection{Abstracts}
+
+If a BibTeX entry contains a field \texttt{abstract} then its contents
+is quoted right after the bibliography entry
+%HEVEA , like \link{examples/publis-abstracts.html}{this}
+. 
+
+This behavior may be suppressed with the option \texttt{\mm{}no-abstract}.
+
+If you want both versions with and without abstracts, use the option
+\texttt{\mm{}both}. In that case, links named "Abstract" will be
+inserted from the page without abstracts to the page with abstracts,
+%HEVEA like \link{examples/publis.html}{this}.
+
+
+\subsubsection{Keywords}
+
+If a BibTeX entry contains a field \texttt{keywords} then its contents
+is displayed after the bibliography entry (and after the abstract if any).
+
+This behavior may be suppressed with the option \texttt{\mm{}no-keywords}.
+
+
+%HEVEA\begin{rawhtml}<a name=options>\end{rawhtml}
+
+\subsection{Command line options}
+
+Most of the command line options have a short version of one character
+(e.g. \texttt{-r}) and an easy-to-remember/understand long version 
+(e.g. \texttt{\mm{}reverse-sort}).
+
+\subsubsection{General aspect of the HTML document}
+
+\begin{description}
+  
+\item[\texttt{-t} \textit{string}, \texttt{\mm{}title} \textit{string}] ~
+
+  specify the title of the HTML file (default is the file name).
+
+
+\item[\texttt{\mm{}header} \textit{string}] ~
+
+  give an additional header for the HTML document.
+
+\item[\texttt{\mm{}footer} \textit{string}] ~
+
+  give an additional footer for the HTML document.
+
+  
+\item[\texttt{-s} \textit{string}, \texttt{\mm{}style} \textit{string}] ~
+  
+  use BibTeX style \textit{string} (plain, alpha, etc.).  Default
+  style is plain.
+
+  
+\item[\texttt{-noabstract}, \texttt{\mm{}no-abstract}] ~
+  
+  do not print the abstracts (if any).
+
+  
+\item[\texttt{-nokeywords}, \texttt{\mm{}no-keywords}] ~
+  
+  do not print the keywords (if any).
+
+  
+\item[\texttt{-both}, \texttt{\mm{}both}] ~
+  
+  produce both pages with and without abstracts. If the BibTeX file is
+  foo.bib then the two pages will be respectively foo.html and
+  foo\_abstracts.html (The suffix may be different, see option
+  \texttt{\mm{}suffix}). Links are inserted from the page without
+  abstracts to the page with abstracts.
+
+  
+\item[\texttt{-nokeys}, \texttt{\mm{}no-keys}] ~
+  
+  do not print the cite keys. Note: this option implicitly suppresses
+  the use of HTML tables to format the entries; to enforce the use of
+  tables, use option \texttt{-use-table} (passing it \emph{after}
+  option \texttt{-nokeys} on the command line).
+
+\item[\texttt{-use-keys}, \texttt{\mm{}use-keys}] ~
+
+  use the cite keys from the BibTeX input file (and not the ones generated
+  by the BibTeX style file).
+  
+\item[\texttt{-rawurl}, \texttt{\mm{}raw-url}] ~
+  
+  print URLs instead of files' types.
+
+ 
+\item[\texttt{-heveaurl}, \texttt{\mm{}hevea-url}] ~
+  
+  interpret the macro \verb!\url! as HeVeA's one, i.e. with two
+  arguments, the first one being the url and the second one the text
+  to print. The default behavior is to interpret the macro \verb!\url!
+  as the one from the package \texttt{url}, which has only one
+  argument (the url itself).
+
+  
+\item[\texttt{-f} \textit{field}, \texttt{\mm{}field} \textit{field}] ~
+  
+  add a web link for that BibTeX field.
+
+  
+\item[\texttt{-nf} \textit{field} \textit{string}, 
+      \texttt{\mm{}named-field} \textit{field} \textit{string}] ~
+  
+  similar to \texttt{-f} but specifies the way to display the link
+  (e.g. \texttt{-nf springer "At Springer's"}).
+
+  
+\item[\texttt{-note} \textit{field}, 
+      \texttt{\mm{}note} \textit{field}] ~
+  
+  declare that a field must be treated like the \texttt{abstract}
+  field, i.e. is an annotation to be displayed as a text paragraph
+  below the entry.
+
+  
+\item[\texttt{-multiple}, \texttt{\mm{}multiple}] ~
+  
+  make a separate web page for each entry.  \textit{Beware: this
+    option produces as many HTML files as BibTeX entries!}
+
+\item[\texttt{-single}, \texttt{\mm{}single}] ~
+
+  produce a single document, inserting each BibTeX entry (the input)
+  right after its BibTeX output
+
+\item[\texttt{-bg} \textit{color}, \texttt{\mm{}background} \textit{color}] ~
+
+  set the background color of the HTML file (default is none).
+
+\item[\texttt{-css} \textit{file}, \texttt{\mm{}style-sheet} \textit{file}] ~
+
+  set a style sheet file for the HTML document (default is none).
+
+\item[\texttt{-dl}, \texttt{\mm{}dl}] ~
+
+  use HTML \texttt{DL} lists instead of HTML tables to format entries.
+
+\item[\texttt{-unicode}, \texttt{\mm{}unicode}] ~
+
+  use Unicode entities for the following macros :
+\begin{verbatim}
+  \models \curlyvee \curlywedge \bigcirc \varepsilon
+  \not{\models}
+\end{verbatim}
+
+\item[\texttt{-html-entities}, \texttt{\mm{}html-entities}] ~
+
+  use HTML entities for the following macros :
+\begin{verbatim}
+\= \Im \Leftarrow \Re \Rightarrow \aleph \ang \angle \approx
+\ast \cdot \cdots \cong \copyright \cup \dagger \diamond \emptyset
+\equiv \exists \forall \ge \geq \in \infty \int \land \lang
+\lceil \le \leftarrow \leftrightarrow \leq \lfloor \longleftarrow 
+\longrightarrow \lor \lozenge \nabla \ne \neg \neq \ni \notin
+\oplus \otimes \partial \perp \pm \prod \propto \rang \rceil
+\rfloor \rightarrow \sim \simeq \sqrt \subset \subseteq
+\sum \supset \supseteq \therefore \times \tm \to \vartheta
+\vee \wedge \wp
+\end{verbatim}
+
+\end{description}
+
+
+\subsubsection{Controlling the translation}
+
+\begin{description}
+  
+\item[\texttt{-m} \textit{file}, \texttt{\mm{}macros-from} \textit{file}] ~
+
+  read the \LaTeX\ macros in the given file.
+  Note: \texttt{bibtex2html} does not handle macros arguments;
+  arguments are simply discarded.
+
+\item[\texttt{-noexpand} \texttt{\mm{}no-expand}] ~
+
+  do not expand the abbreviation strings, leave them in the output file.
+
+\end{description}
+
+
+\subsubsection{Selecting the entries}
+
+
+\begin{description}
+
+\item[\texttt{-citefile} \textit{filename}, \texttt{\mm{}citefile}
+  \textit{filename}] ~
+
+Select only keys appearing in \textit{filename}. To be used manually
+or in conjonction with \verb|bib2bib|. 
+
+\item[\texttt{-e} \textit{key}, \texttt{\mm{}exclude} \textit{key}] ~
+
+  exclude an particular entry.
+\end{description}
+
+\subsubsection{Sorting the entries}
+
+\begin{description}
+  
+\item[\texttt{-d}, \texttt{\mm{}sort-by-date}] ~
+
+ sort by date.
+
+  
+\item[\texttt{-a}, \texttt{\mm{}sort-as-bibtex}] ~
+  
+  sort as BibTeX (usually by author).
+
+  
+\item[\texttt{-u}, \texttt{\mm{}unsorted}] ~
+  
+  unsorted i.e. same order as in .bib file (default).
+
+  
+\item[\texttt{-r}, \texttt{\mm{}reverse-sort}] ~
+
+ reverse the sort.
+
+\item[\texttt{\mm{}revkeys}] ~
+
+ number entries in reverse order (i.e. from $n$ to 1 in plain style).
+  
+
+\end{description}
+
+
+\subsubsection{Miscellaneous options}
+
+\begin{description}
+  
+\item[\texttt{-nodoc}, \texttt{\mm{}nodoc}] ~
+
+  do not produce a full HTML document but only its body (useful to
+  merge the HTML bibliography in a bigger HTML document).
+
+\item[\texttt{-nobibsource}, \texttt{\mm{}nobibsource}] ~
+
+  do not produce the \verb|_bib.html| file. In that case, no ``BibTeX
+  entry'' link are inserted in the HTML file.
+
+\item[\texttt{-suffix} \textit{string}, \texttt{\mm{}suffix} \textit{string}] ~
+
+  give an alternate suffix \textit{string} for both
+  HTML files and links (default is \texttt{.html}).
+
+\item[\texttt{-fsuffix} \textit{string}, 
+      \texttt{\mm{}file-suffix} \textit{string}] ~
+
+  give an alternate suffix \textit{string} for
+  HTML files (default is \texttt{.html}).
+
+\item[\texttt{-lsuffix} \textit{string}, 
+      \texttt{\mm{}link-suffix} \textit{string}] ~
+
+  give an alternate suffix \textit{string} for
+  HTML links (default is \texttt{.html}).
+
+\item[\texttt{-o} \textit{file}, \texttt{\mm{}output} \textit{file}] ~
+
+  specifies the output file. If \textit{file} is \verb!-!, then the
+  standard output is selected.
+    
+\item[\texttt{-c} \textit{command}, \texttt{\mm{}command} \textit{command}] ~
+  
+  specify the BibTeX command (default is \texttt{bibtex
+    -min-crossrefs=1000}). May be useful for example if
+  you need to specify the full path of the \texttt{bibtex} command. 
+
+\item[\texttt{\mm{}print-keys}] ~
+
+  print the BibTeX entries on the standard output (one per line), as
+  selected and sorted by \texttt{bibtex2html}. This is useful if you
+  want to use the selection and sorting facilities of
+  \texttt{bibtex2html} in another program. Note: you may need to set
+  also the \texttt{-q} option (quiet) to suppress the usual output.
+
+\item[\texttt{-i}, \texttt{\mm{}ignore-errors}] ~
+
+  ignore BibTeX errors.
+
+\item[\texttt{-q}, \texttt{\mm{}quiet}] ~
+
+  be quiet.
+
+\item[\texttt{-w}, \texttt{\mm{}warn-error}] ~
+
+  stop at the first warning.
+
+\item[\texttt{-h}, \texttt{\mm{}help}] ~
+
+  print a short usage and exit.
+
+\item[\texttt{-v}, \texttt{\mm{}version}] ~
+
+  print the version and exit.
+
+\item[\texttt{-noheader}, \texttt{\mm{}no-header}] ~
+
+  do not insert the \texttt{bibtex2html} command in the HTML document
+  (default is to insert it as a comment at the beginning).
+
+\end{description}
+
+
+\section{The \texttt{bib2bib} command line tool}
+
+\texttt{bib2bib} is a tool for extracting some entries from a list of
+bibliography files. It is invocated as 
+\begin{flushleft}
+\texttt{bib2bib} [options] \textit{file1.bib} $\cdots$ \textit{filen.bib}
+\end{flushleft}
+where the possible options are described below and where
+\textit{file1.bib} $\cdots$ \textit{filen.bib} are the names of the
+BibTeX files, which must have a \textit{.bib} suffix. If no files at
+all are given on the command line, then input is taken from standard
+input. 
+
+The options allow to specify a filter condition to test against each
+references read from bib files. The result will be a new BibTeX file
+containing all the entries of the input files that satisfy the
+condition. Notice that this output file contains all the necessary
+informations: each string and each cross-reference needed will be also
+in that file.
+
+Additionally, \textit{bib2bib} may output a file containing all the
+keys of entries that satisfy the condition. This second file is
+suitable for input as option \verb|-citefile| to \verb|bibtex2html|.
+
+\subsection{Command line options}
+
+\begin{description}
+  
+\item[\texttt{-c} \textit{condition}] ~
+
+  specify a condition for selecting the entries. The output will
+  retain only the entries that satisfy this condition. If several such
+  condition are given, then only the entries that satisfy all the
+  conditions are selected. The syntax of conditions is given below,
+  notice that it is better to escape shell expansions in that
+  conditions, in other words, you should write conditions between
+  quotes. 
+
+\item[\texttt{-ob} \textit{filename}] ~
+
+  specify the filename where the selected entries are output. If not
+  given, it defaults to standard output. 
+
+\item[\texttt{-oc} \textit{filename}] ~
+
+  specify the filename where the list of selected keys is output. If
+  not given, this file is not created.
+
+  Notice that the two output files above are suitable for use with
+  bibtex2html.  A typical use would be
+\begin{flushleft}
+\texttt{bib2bib -oc $citefile$ -ob $bibfile.bib$ -c $condition$
+  file1.bib file2.bib ... } \\
+\texttt{bibtex2html -citefile $citefile$ bibfile.bib}
+\end{flushleft}
+which will produce exactly the HTML file for the selected
+references. 
+
+\item[\texttt{\mm{}expand}] ~
+
+  expand all abbreviations in the output file. 
+
+\item[\texttt{\mm{}expand-xrefs}] ~
+
+  expand all crossrefs in the output file. Notice that the meaning of
+  such an expansion is not completely obvious: it's better to let
+  bibtex (via bibtex2html) handle the cross-references itself,
+  depending on the style considered.
+
+  Notice that \texttt{bibtex2html} itself will expand the strings (by
+  default, unless you specify the \verb|-noexpand| option) but not the
+  cross-references.
+
+
+\item[\texttt{\mm{}no-comment}] ~
+
+  prevent generation of extra comments at beginning of output bib file.
+
+\item[\texttt{\mm{}remove} \textit{f}] ~
+
+    remove all occurrences of field \textit{f}. This option can be
+    used several times to remove several fields.
+
+\item[\texttt{\mm{}rename} \textit{f1} \textit{f2}] ~
+
+    rename all occurrences of field \textit{f1} into \texttt{f2}. This
+    option can be used several times to rename several fields. Beware
+    that if an entry already has both fields \texttt{f1} and
+    \texttt{f2}, this will result in two fields \textit{f2}, and
+    BibTeX styles usually take only the first occurrence into account.
+    
+    Example:
+  \begin{flushleft}
+    \texttt{bib2bib \mm{}remove abstract \mm{}remove copyright \mm{}rename x-pdf url $bibfile.bib$}
+  \end{flushleft}
+  removes all \texttt{abstract} and \texttt{copyright} fields and
+  rename all \texttt{x-pdf} fields into name \texttt{url}.
+
+\item[\texttt{-s} \textit{f}] ~
+
+  sorts the entries of the bibliography with respect to the given
+  field \textit{f}, which may also be \texttt{\$key} or \texttt{\$type}
+  to refer to the key or to the entry type, as for filter
+  conditions. It may also be \texttt{\$date}, to ask for sorting from
+  oldest to newest, as for option \texttt{-d} of bibtex2html.
+ 
+  This option may be used several times to specify a lexicographic
+  order, such as by author, then by type, then by date:
+  \begin{flushleft}
+    \texttt{bib2bib -s 'author' -s '\$type' -s '\$date' $bibfile.bib$}
+  \end{flushleft}
+
+  When sorting, the resulting bibliography will always contains the
+  comments first, then the preambles, then the abbreviations, and
+  finally the regular entries. Be warned that such a sort may put
+  cross-references before entries that refer to them, so be cautious.
+
+\item[\texttt{-r}] ~
+
+  reverses the sort order.
+
+\item[\texttt{-q}, \texttt{\mm{}quiet}] ~
+
+  be quiet.
+
+\item[\texttt{-w}, \texttt{\mm{}warn-error}] ~
+
+  stop at the first warning.
+
+\item[\texttt{\mm{}php-output} \textit{file}] ~
+
+  outputs the bib file as a two-dimensional array in PHP syntax, in
+  \textit{file}.
+
+\end{description}
+
+\subsection{Filter conditions}
+\label{sec:conditions}
+
+A filter condition is a boolean expression that is evaluated against a
+BibTeX entry to decide whether this entry should be selected. A
+condition is either:
+\begin{itemize}
+\item a \emph{comparison} between two \emph{expressions}, written as
+  $e_1~op~e_2$ ; 
+\item a matching of a field name with respect to a \emph{regular
+    expression}, written as $field : regexp$ ; 
+\item a conjunction of two conditions, written as $c_1 \verb| and |
+  c_2$ (or $c_1 \verb| & | c_2$) ;
+\item a disjunction of two conditions, written as $c_1 \verb| or |
+  c_2$ (or $c_1 \verb+ | + c_2$);
+\item a negation of a condition, written as $\verb|not | c$ (or
+  $\verb|! | c$) ;
+\item a test of existence of a field, written as $\verb|exists | f$
+  (or $\verb|? | f$) where $f$ is a field name ;
+\end{itemize}
+where an expression is either:
+\begin{itemize}
+\item a string constant, written either between double quotes or single 
+  quotes ; 
+\item an integer constant ;
+\item a field name ;
+\item the special ident \verb|$key| which corresponds to the key of
+  an entry. 
+\item the special ident \verb|$type| which corresponds to the type
+  of an entry (ARTICLE, INPROCEEDINGS, etc.). Notice that an entry
+  type is always written in uppercase letters.
+\end{itemize} 
+
+Comparison operators are the usual ones: \texttt{=}, \texttt{<},
+\texttt{>}, \texttt{<=}, \texttt{>=} and \texttt{<>}. 
+
+The field names are any sequences of lowercase or uppercase letters (but no
+distinction is made between lowercase and uppercase letters).
+
+Be careful when writing conditions in a shell command: the shell must
+not interpret anything in a condition, such as \verb|$key|. So usually
+you need to put conditions inside quote characters that forbid shell
+interpretation: single quotes under Unix shell, or double quotes under
+Microsoft Windows shell. This is why strings in conditions may be put
+indifferently between single or double quotes: you will use the ones
+which are not the ones you use to forbid shell interpretation. In
+examples below, we will use Unix convention, so under Windows you have
+to permute the use of single and double quotes.
+
+Note that within \texttt{Makefile}s you have to escape the \verb|$|
+character in \verb|$key| or \verb|$type| (using \verb|$$key| and
+\verb|$$type| instead, at least with GNU make).
+
+Regular expressions must be put between single or double quotes, and must
+follow the GNU syntax of regular expressions, as for example in GNU Emacs. Any
+character other than \verb|$^.*+?[]| matches itself, see
+Table~\ref{table:regexp} for the meaning of the special characters.
+
+\begin{table}[t]
+\begin{center}
+\begin{tabular}{|l|p{100mm}|}
+\hline
+\verb|.| & matches any character except newline \\\hline
+\verb|[..]| & character set; ranges are denoted with \verb|-|, as in
+\verb|[a-z]|; an initial \verb|^|, as in \verb|[^0-9]|, complements
+the set \\\hline 
+\verb|^| & matches the beginning of the string matched \\\hline
+\verb|$| & matches the end of the string matched \\\hline
+\verb|\r| & matches a carriage return \\\hline
+\verb|\n| & matches a linefeed \\\hline
+\verb|\t| & matches a tabulation \\\hline
+\verb|\b| & matches word boundaries \\\hline
+\verb|\|\textsl{ddd} & matches character with ASCII code \textsl{ddd} in decimal \\\hline
+\verb|\|\textsl{char} & quotes special character \textsl{char} among
+\verb#$^.*+?[]\# \\\hline 
+\textsl{regexp}\verb|*| & matches \textsl{regexp} zero, one or several
+times \\\hline 
+\textsl{regexp}\verb|+| & matches \textsl{regexp} one or several times
+\\\hline 
+\textsl{regexp}\verb|?| & matches \textsl{regexp} once or not at all \\\hline
+\textsl{regexp1} \verb+\|+ \textsl{regexp2} & alternative between two
+regular expressions, this operator has low priority against
+\verb|*|, \verb|+| and \verb|?| \\\hline
+\verb|\(| \textsl{regexp} \verb|\)| & grouping regular expression \\\hline
+\end{tabular} 
+\end{center}
+\caption{Syntax of regular expressions}
+\label{table:regexp}
+\end{table}
+
+Notice that if several conditions are given with option \verb|-c| on
+the command line, then they are understood as the conjunction of them,
+in other words
+\begin{flushleft}
+\texttt{bib2bib -c '$c_1$' $\cdots$ -c '$c_n$'}
+\end{flushleft} 
+is equivalent to
+\begin{flushleft}
+\texttt{bib2bib -c '$c_1$ and $\cdots$ and $c_n$'}
+\end{flushleft} 
+
+Table~\ref{table:syntax} shows a formal grammar for conditions.
+
+\begin{table}[t]
+\begin{eqnarray*}
+Cond & \rightarrow & Cond \verb| and | Cond \mid Cond \verb| or | Cond
+\mid \verb|not | Cond \mid \verb|exists | Id  \\
+Cond & \rightarrow & Cond \verb| & | Cond \mid Cond \verb+ | + Cond
+\mid \verb|! | Cond \mid \verb|? | Id\\
+&& \mid Expr ~ Comp ~ Expr \mid Expr \verb|:| String 
+\mid \verb|( | Cond \verb| )|\\
+Comp & \rightarrow & \verb|=| \mid \verb|>| \mid \verb|<| \mid
+\verb|>=| \mid \verb|<=| \mid \verb|<>| \\
+Expr & \rightarrow & Id \mid String \mid Int \mid \verb|$key| 
+\mid \verb|$type| \\
+Id & \rightarrow & [\verb|a|-\verb|z|\verb|A|-\verb|Z|]^+ \\
+String & \rightarrow & \verb|"| ([\verb|^"\|] \mid \verb|\"| \mid \verb|\\| )^*
+\verb|"| \mid \verb|'| ([\verb|^'\|] \mid \verb|\'| \mid \verb|\\| )^* \verb|'| \\ 
+Integer & \rightarrow & [\verb|0|-\verb|9|]^+
+\end{eqnarray*}
+\caption{Syntax of conditions}
+\label{table:syntax}
+\end{table}
+
+\subsubsection*{Remarks on evaluation of conditions}
+
+\begin{itemize}
+\item According to BibTeX conventions, entry types, keys and field
+  names have to be considered case insensitive, that is no distinction
+  is made between uppercase and lowercase letters. Inside
+  \verb|bib2bib|, these are always converted to uppercase, so you may
+  take this into account when writting conditions (see below).
+\item On the other hand, case matters when comparing strings, or
+  matching them against regular expressions. For example, 
+  \verb|title : "Computer"| may return \verb|true| if the title
+  contains the word \verb|Computer| with a capital letter, whereas
+  \verb|title : "computer"| would return \verb|false|.
+\item A consequence of the two previous remarks, is that if you want for
+  example to check equality of the entry type and a string value, put the
+  value in uppercase, as for example \verb|$type = "INPROCEEDINGS"|,
+  otherwise the condition would be always false. 
+\item When performing a comparison with an non-existent field, the result is
+  always false ; beware that this means that for example 
+  \verb|not (f = "value")| and \verb|f <> "value"| are not equivalent: for an
+  entry that does not have a field \verb|f|, the first condition is true
+  whereas the second is false. 
+\item As usual, \verb|not| has higher priority than \verb|and|, which itself
+  has higher priority than \verb|or|. \verb|and| and \verb|or| associate to
+  the left.
+\item Comparison using \verb|>|, \verb|<|, \verb|>=| and \verb|<=| may only be
+  used between integer values. In any other case, a warning is displayed and
+  the result is false.
+\item There is a special handling for strings containing LaTeX
+  accented letters (or for backward compatibility, ISO-Latin1 accented
+  characters): each variant of writing such letters are considered the
+  same, and equivalent to their HTML entity form, for example strings
+  \verb|"Filli\^atre"|, \verb|"Filli{\^a}tre"|, \verb|"Filli\^{a}tre"|
+  and \verb|"Filliâtre"| are considered identical and indeed equal to
+  \verb|"Filli&acirc;tre"|. Note that when using such a string as a
+  regular expression, there is no need to escape the backslash, since
+  interpretation of LaTeX accenting commands is made before
+  interpretation into a regexp. Using HTML entities for matching
+  accented names is thus considered as the safest method.
+\end{itemize}
+
+\subsection{Examples}
+
+Here are some examples to help you writing the filter conditions you
+are interested in.
+
+\subsubsection{Selecting entries of a given year}
+
+The following command reads input files \verb|biblio1.bib| and
+\verb|biblio2.bib|, and select only entries that appeared in 1999 :
+\begin{verbatim}
+bib2bib -oc cite1999 -ob 1999.bib -c 'year=1999' biblio1.bib biblio2.bib 
+\end{verbatim}
+The resulting file \verb|cite1999| contains the list of keys
+selected. You can then produce the HTML file by
+\begin{verbatim}
+bibtex2html -citefile cite1999 1999.bib
+\end{verbatim}
+
+You may also select references appeared after and/or before a given
+year. For example, references after 1997:
+\begin{verbatim}
+bib2bib -oc citeaft1997 -ob aft1997.bib -c 'year>1997' biblio.bib 
+\end{verbatim}
+or between 1990 and 1995:
+\begin{verbatim}
+bib2bib -oc cite90-95 -ob 90-95.bib -c 'year>=1990 and year<=1995' biblio.bib 
+\end{verbatim}
+
+\subsubsection{Selecting references of a given author}
+
+The following command reads input files \verb|biblio.bib| and select
+only entries whose (co)author is Donald Knuth: 
+\begin{verbatim}
+bib2bib -oc knuth-citations -ob knuth.bib -c 'author : "Knuth"' biblio.bib
+\end{verbatim}
+More complicated, if you would like to have only the references whose
+author is Knuth only, you may try
+\begin{verbatim}
+bib2bib -oc knuth-citations -ob knuth.bib \
+ -c 'author : "^\(Donald \(E. \)?Knuth\|Knuth, Donald \(E.\)?\)$"' biblio.bib
+\end{verbatim}
+or equivalently but missing the possible ``\verb|E.|'':
+\begin{verbatim}
+bib2bib -oc knuth-citations -ob knuth.bib -c 'author = "Donald Knuth"
+or author = "Knuth, Donald"' biblio.bib
+\end{verbatim}
+
+\subsubsection{Other examples}
+
+Any boolean combination of comparison and/or matching are
+possible. For example, the following command extract the references
+that appeared since 1995 and have lambda-calculus in their title, with
+anything between ``lambda'' and ``calculus'':
+\begin{verbatim}
+bib2bib -oc lambda -c 'year >= 1995 and title : "lambda.*calculus"' biblio.bib
+\end{verbatim}
+for example, it will select a title containing
+\verb|$\lambda$-calculus|. 
+
+\subsection{Note on duplicates entries}
+ 
+\verb|bib2bib| has the effect of merging several bib files into a
+single one. This process may result in duplicate entries in the
+resulting files, which is considered as erroneous by \verb|bibtex|.  
+Of course, this is not really a bug of \verb|bib2bib| since it is of
+your own to take care not having entries with the same key. 
+
+However, there are two particular cases when this occurs naturally:
+when two bib files share common abbreviations, or when they share
+common cross-references. 
+
+In order to make \verb|bib2bib| behaves correctly in such a case,
+it is designed as follows: for repeated abbrevs, the first abbrev is kept and
+the others are ignored, and for repeated regular entries, the last entry
+is kept and the others are ignored.  With this behaviour, everything
+works well as soon as repeated abbrevs are really duplicate abbrevs of
+the same sentence, and repeated keys are really duplicate
+entries. 
+
+
+\section{The \texttt{aux2bib} command line tool}
+
+\texttt{aux2bib} is a tool extracting the BibTeX references from a
+\texttt{.aux} file (as produced by \LaTeX) and building the
+corresponding BibTeX file. It is invocated as
+\begin{flushleft}
+\texttt{aux2bib} \textit{file.aux}
+\end{flushleft}
+The BibTeX file is written on the standard output.
+
+
+\section{Frequently Asked Questions}
+
+\begin{enumerate}
+
+\item \textbf{How may I tell bibtex2html to expand cross-references?} ~
+
+  By default, all entries of the input BibTeX file are translated into
+  HTML, including cross-references. Since the latter are there, bibtex
+  will never expand them. If you want them to be expanded, you have to
+  tell bibtex2html that crossref entries need not be in the resulting
+  file. To do that you have to use the option \verb|-citefile| to give
+  the exact list of entries you want to see. If a cross-reference is
+  not in that list, then its fields will be expanded into all entries
+  that cross-refers to it. (Technically, this work because bibtex2html
+  calls bibtex with option \verb|-min-crossrefs=1000| by default.)
+
+\item \textbf{When running}
+\begin{verbatim}
+bib2bib -oc knuth-citations -ob knuth.bib -c 'author : "Knuth"' biblio.bib
+\end{verbatim}
+\textbf{I get "Lexical error in condition: Unterminated
+  string". What's going wrong?}
+
+  You are probably running \verb|bib2bib| under Microsoft Windows, hence
+  you should permute the use of single quotes and double quotes, as
+  explained in Section~\ref{sec:conditions}:
+\begin{verbatim}
+bib2bib -oc knuth-citations -ob knuth.bib -c "author : 'Knuth'" biblio.bib
+\end{verbatim}
+
+\end{enumerate}
+
+%HEVEA\begin{rawhtml}<hr><img src="http://www.lri.fr/~filliatr/icons/mail.gif" ALIGN=middle><em><a href="mailto:Jean-Christophe.Filliatre[at]lri.fr, Claude.Marche[at]lri.fr">mail to authors</a> , Fri Feb 12 17:46:23 1999\end{rawhtml}
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
