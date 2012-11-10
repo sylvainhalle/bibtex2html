@@ -1,6 +1,6 @@
 (**************************************************************************)
 (*  bibtex2html - A BibTeX to HTML translator                             *)
-(*  Copyright (C) 1997-2010 Jean-Christophe Filliâtre and Claude Marché   *)
+(*  Copyright (C) 1997-2010 Jean-Christophe Filliï¿½tre and Claude Marchï¿½   *)
 (*                                                                        *)
 (*  This software is free software; you can redistribute it and/or        *)
 (*  modify it under the terms of the GNU General Public                   *)
@@ -64,25 +64,25 @@ let find_macro name =
 
 (* Sectioning *)
 def "\\part"
-    [Print "<H0>"; Print_arg; Print "</H0>\n"];
+    [Print "<h0>"; Print_arg; Print "</h0>\n"];
 def "\\chapter"
-    [Print "<H1>"; Print_arg; Print "</H1>\n"];
+    [Print "<h1>"; Print_arg; Print "</h1>\n"];
 def "\\chapter*"
-    [Print "<H1>"; Print_arg; Print "</H1>\n"];
+    [Print "<h1>"; Print_arg; Print "</h1>\n"];
 def "\\section"
-    [Print "<H2>"; Print_arg; Print "</H2>\n"];
+    [Print "<h2>"; Print_arg; Print "</h2>\n"];
 def "\\section*"
-    [Print "<H2>"; Print_arg; Print "</H2>\n"];
+    [Print "<h2>"; Print_arg; Print "</h2>\n"];
 def "\\subsection"
-    [Print "<H3>"; Print_arg; Print "</H3>\n"];
+    [Print "<h3>"; Print_arg; Print "</h3>\n"];
 def "\\subsection*"
-    [Print "<H3>"; Print_arg; Print "</H3>\n"];
+    [Print "<h3>"; Print_arg; Print "</h3>\n"];
 def "\\subsubsection"
-    [Print "<H4>"; Print_arg; Print "</H4>\n"];
+    [Print "<h4>"; Print_arg; Print "</h4>\n"];
 def "\\subsubsection*"
-    [Print "<H4>"; Print_arg; Print "</H4>\n"];
+    [Print "<h4>"; Print_arg; Print "</h4>\n"];
 def "\\paragraph"
-    [Print "<H5>"; Print_arg; Print "</H5>\n"];
+    [Print "<h5>"; Print_arg; Print "</h5>\n"];
 
 (* Text formatting *)
 def "\\begin{alltt}" [Print "<pre>"];
@@ -702,7 +702,7 @@ let init_style_macros st =
 	"\\Btxtechreplong", "Technischer Bericht";
 	"\\btxmonjanlong", "Januar";
 	"\\btxmonfeblong", "Februar";
-	"\\btxmonmarlong", "März";
+	"\\btxmonmarlong", "Mï¿½rz";
 	"\\btxmonaprlong", "April";
 	"\\btxmonmaylong", "Mai";
 	"\\btxmonjunlong", "Juni";
@@ -712,7 +712,7 @@ let init_style_macros st =
 	"\\btxmonoctlong", "Oktober";
 	"\\btxmonnovlong", "November";
 	"\\btxmondeclong", "Dezember";
-	"\\btxmonmarshort", "März";
+	"\\btxmonmarshort", "Mï¿½rz";
 	"\\btxmonmayshort", "Mai";
 	"\\btxmonjunshort", "Juni";
 	"\\btxmonjulshort", "Juli";
