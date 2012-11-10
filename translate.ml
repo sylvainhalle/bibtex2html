@@ -405,7 +405,7 @@ let close_table ch = match !table with
 let open_row ch = match !table with
   | Table ->
       Html.open_balise ch "tr valign=\"top\""; output_string ch "\n";
-      Html.open_balise ch "td align=\"right\" class=\"bibtexnumber\""; 
+      Html.open_balise ch "td align=\"right\" class=\"bibtex2html-bibtexnumber\""; 
       output_string ch "\n"
   | DL ->
       Html.open_balise ch "dt"; output_string ch "\n"
@@ -415,7 +415,7 @@ let open_row ch = match !table with
 let new_column ch = match !table with
   | Table ->
       Html.close_balise ch "td"; output_string ch "\n";
-      Html.open_balise ch "td class=\"bibtexitem\""; output_string ch "\n"
+      Html.open_balise ch "td class=\"bibtex2html-bibtexitem\""; output_string ch "\n"
   | DL ->
       Html.close_balise ch "dt"; output_string ch "\n";
       Html.open_balise ch "dd"; output_string ch "\n"
