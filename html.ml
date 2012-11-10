@@ -1,6 +1,6 @@
 (**************************************************************************)
 (*  bibtex2html - A BibTeX to HTML translator                             *)
-(*  Copyright (C) 1997-2010 Jean-Christophe Filliâtre and Claude Marché   *)
+(*  Copyright (C) 1997-2010 Jean-Christophe Filliï¿½tre and Claude Marchï¿½   *)
 (*                                                                        *)
 (*  This software is free software; you can redistribute it and/or        *)
 (*  modify it under the terms of the GNU General Public                   *)
@@ -23,18 +23,19 @@ let css = ref None
 
 let open_document ch ftitle =
   output_string ch
-    "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n\n";
-  output_string ch "<html>\n\n<head>\n";
+    "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n\n";
+  output_string ch "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n\n<head>\n";
   output_string ch "<title>"; ftitle(); output_string ch "</title>\n";
+  output_string ch "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
   begin match !css with
     | None -> ()
     | Some f -> 
-	fprintf ch "<link rel=stylesheet type=\"text/css\" href=\"%s\">\n" f
+	fprintf ch "<link rel=\"stylesheet\" type=\"text/css\" href=\"%s\" />\n" f
   end;
   output_string ch "</head>\n\n";
   begin match !bgcolor with
     | None -> output_string ch "<body>\n"
-    | Some color -> fprintf ch "<body bgcolor=%s>\n" color
+    | Some color -> fprintf ch "<body bgcolor=\"%s\">\n" color
   end;
   flush ch
   
