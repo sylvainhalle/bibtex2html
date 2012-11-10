@@ -1,6 +1,6 @@
 (**************************************************************************)
 (*  bibtex2html - A BibTeX to HTML translator                             *)
-(*  Copyright (C) 1997-2010 Jean-Christophe Filliâtre and Claude Marché   *)
+(*  Copyright (C) 1997-2010 Jean-Christophe Filliï¿½tre and Claude Marchï¿½   *)
 (*                                                                        *)
 (*  This software is free software; you can redistribute it and/or        *)
 (*  modify it under the terms of the GNU General Public                   *)
@@ -290,7 +290,23 @@ let blockquote ch f =
   Html.close_balise ch "blockquote";
   output_string ch "\n"
 
-let display_abstract ch a = blockquote ch (fun () -> latex2html ch a)
+let abstract_div ch f =
+(* JK  Html.paragraph ch; output_string ch "\n"; *)
+  Html.open_balise ch "div class=\"bibtex2html-abstract\"";
+  output_string ch "\n";
+  f (); output_string ch "\n";
+  Html.close_balise ch "div";
+  output_string ch "\n"
+
+let keywords_div ch f =
+(* JK  Html.paragraph ch; output_string ch "\n"; *)
+  Html.open_balise ch "div class=\"bibtex2html-keywords\"";
+  output_string ch "\n";
+  f (); output_string ch "\n";
+  Html.close_balise ch "div";
+  output_string ch "\n"
+
+let display_abstract ch a = abstract_div ch (fun () -> latex2html ch a)
 
 let display_notes ch e =
   List.iter 
@@ -306,7 +322,7 @@ let display_notes ch e =
 let display_keywords ch e =
   try
     let k = Expand.get_lowercase_field e "keywords" in
-    blockquote ch (fun () -> output_string ch "Keywords: "; latex2html ch k)
+    keywords_div ch (fun () -> output_string ch "<span class=\"bibtex2html-caption\">Keywords:</span> "; latex2html ch k)
   with Not_found -> 
     ()
 
