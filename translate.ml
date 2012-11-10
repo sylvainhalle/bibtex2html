@@ -55,7 +55,7 @@ let eprint = ref true
 let eprint_prefix = ref "http://arxiv.org/abs/"
 let revkeys = ref false
 
-type table_kind = Table | DL | NoTable
+type table_kind = Table | DL | NoTable | OL | UL
 let table = ref Table
 
 (* internal name, plus optional external name *)
@@ -393,13 +393,17 @@ let separate_file (b,((_,k,f) as e)) =
   in_summary := true
 
 let open_table ch = match !table with
-  | Table -> Html.open_balise ch "table"
-  | DL -> Html.open_balise ch "dl"
+  | Table -> Html.open_balise ch "table class=\"bibtex2html-list\""
+  | DL -> Html.open_balise ch "dl class=\"bibtex2html-list\""
+  | OL -> Html.open_balise ch "ol class=\"bibtex2html-list\""
+  | UL -> Html.open_balise ch "ul class=\"bibtex2html-list\""
   | NoTable -> ()
 
 let close_table ch = match !table with
   | Table -> Html.close_balise ch "table"
   | DL -> Html.close_balise ch "dl"
+  | OL -> Html.close_balise ch "ol"
+  | UL -> Html.close_balise ch "ul"
   | NoTable -> ()
 
 let open_row ch = match !table with
@@ -409,6 +413,10 @@ let open_row ch = match !table with
       output_string ch "\n"
   | DL ->
       Html.open_balise ch "dt"; output_string ch "\n"
+  | OL ->
+      Html.open_balise ch "li"; output_string ch "\n"
+  | UL ->
+      Html.open_balise ch "li"; output_string ch "\n"
   | NoTable ->
       Html.open_balise ch "p"
 
@@ -419,6 +427,8 @@ let new_column ch = match !table with
   | DL ->
       Html.close_balise ch "dt"; output_string ch "\n";
       Html.open_balise ch "dd"; output_string ch "\n"
+  | OL -> ()
+  | UL -> ()
   | NoTable ->
       output_string ch "\n"
 
@@ -429,6 +439,10 @@ let close_row ch = match !table with
   | DL ->
       (* JK Html.paragraph ch; output_string ch "\n"; *)
       Html.close_balise ch "dd"; output_string ch "\n"
+  | OL ->
+      Html.close_balise ch "li"; output_string ch "\n"
+  | UL ->
+      Html.close_balise ch "li"; output_string ch "\n"
   | NoTable ->
       Html.close_balise ch "p"
 
@@ -446,7 +460,7 @@ let one_entry_summary ch biblio (_,b,((_,k,f) as e)) =
     latex2html ch (if !use_keys then k else Hashtbl.find cite_tab k);
     if !multiple then Html.close_href ch;
   end else
-    if !table <> NoTable then output_string ch "&nbsp;";
+    (* if !table <> NoTable then output_string ch "&nbsp;"; *)
   Html.close_anchor ch;
   if (not !nokeys) or !multiple then output_string ch "]";
   (* end of JK changes *)

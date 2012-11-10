@@ -1,6 +1,6 @@
 (**************************************************************************)
 (*  bibtex2html - A BibTeX to HTML translator                             *)
-(*  Copyright (C) 1997-2010 Jean-Christophe Filliâtre and Claude Marché   *)
+(*  Copyright (C) 1997-2010 Jean-Christophe Filliï¿½tre and Claude Marchï¿½   *)
 (*                                                                        *)
 (*  This software is free software; you can redistribute it and/or        *)
 (*  modify it under the terms of the GNU General Public                   *)
@@ -368,7 +368,8 @@ Usage: bibtex2html <options> [filename]
              add a web link for that BibTeX field, with the supplied name
   -note field
              declare a note field
-  -dl        use DL lists instead of TABLEs
+  -dl, -ol, -ul
+             use DL (resp. OL, UL) lists instead of TABLEs
   -unicode   use Unicode characters for some LaTeX macros (as HTML entities) 
   -html-entities
              use HTML entities for some LaTeX macros
@@ -479,6 +480,10 @@ i*)
 	both := true; parse_rec rem
     | ("-dl" | "--dl") :: rem ->
 	table := DL; parse_rec rem
+    | ("-ol" | "--ol") :: rem ->
+	table := OL; parse_rec rem
+    | ("-ul" | "--ul") :: rem ->
+	table := UL; parse_rec rem
     | ("-unicode" | "--unicode") :: rem ->
 	Latexmacros.unicode_entities (); parse_rec rem
     | ("-html-entities" | "--html-entities") :: rem ->

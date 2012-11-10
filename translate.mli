@@ -1,6 +1,6 @@
 (**************************************************************************)
 (*  bibtex2html - A BibTeX to HTML translator                             *)
-(*  Copyright (C) 1997-2010 Jean-Christophe Filliâtre and Claude Marché   *)
+(*  Copyright (C) 1997-2010 Jean-Christophe Filliï¿½tre and Claude Marchï¿½   *)
 (*                                                                        *)
 (*  This software is free software; you can redistribute it and/or        *)
 (*  modify it under the terms of the GNU General Public                   *)
@@ -50,7 +50,7 @@ val eprint_prefix : string ref
 val links_in_bib_file : bool ref
 val revkeys : bool ref
 
-type table_kind = Table | DL | NoTable
+type table_kind = Table | DL | NoTable | OL | UL
 val table : table_kind ref
 
 (*s Inserting links for some BibTeX fields. *)
