@@ -15,3 +15,14 @@
 /version.ml
 /*.tex
 /manual.*
+/bibtex_lexer.ml
+/bibtex_parser.ml
+/bibtex_parser.mli
+/condition_lexer.ml
+/condition_parser.ml
+/condition_parser.mli
+/bbl_lexer.ml
+/bib2bib
+/bibtex2html
+/latex_accents.ml
+/latexscan.ml
